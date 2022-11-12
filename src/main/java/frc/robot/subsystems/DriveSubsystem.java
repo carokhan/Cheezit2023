@@ -2,6 +2,8 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import java.util.Map;
+
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -13,6 +15,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.Constants.*;
 
 public class DriveSubsystem extends SubsystemBase {
@@ -55,11 +58,13 @@ public class DriveSubsystem extends SubsystemBase {
     private final SwerveDriveOdometry odometry = 
         new SwerveDriveOdometry(
             DriveConstants.kDriveKinematics, 
-            navx.getRotation2d()
+            navx.getRotation2d(),
+            getModulePositions()
         );
 
-    private GenericEntry swerveTest = Shuffleboard.getTab("Dashboard").add("Test Heading", false).withWidget(BuiltInWidgets.kToggleSwitch).getEntry();
-    private GenericEntry testHeading = Shuffleboard.getTab("Dashboard").add("Go-to Heading", 0).withWidget(BuiltInWidgets.kNumberSlider).getEntry();
+    private ShuffleboardTab sboard = Shuffleboard.getTab("Dashboard");
+    private GenericEntry swerveTest = sboard.add("Test Heading", false).withWidget(BuiltInWidgets.kToggleButton).getEntry();
+    private GenericEntry testHeading = sboard.add("Heading", 0).withWidget(BuiltInWidgets.kNumberBar).withProperties(Map.of("min", 0, "max", 360)).getEntry();
 
     public DriveSubsystem() {
         navx.calibrate();
